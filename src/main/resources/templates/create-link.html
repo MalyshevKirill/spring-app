@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:insert="components/head">
+</head>
+<body>
+<header th:insert="components/header">
+</header>
+<main>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-6">
+                <form action="/create-link" method="post">
+                    <div class="mb-3">
+                        <label for="source" class="form-label">Source</label>
+                        <input type="text" class="form-control" id="source" name="source">
+                    </div>
+                    <div class="mb-3">
+                        <label for="link" class="form-label">Link</label>
+                        <input type="text" class="form-control" id="link" name="link">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="generate-link-check" class="form-check-input" name="auto">
+                        <label for="generate-link-check">Generate Link</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <small class="form-text text-danger" th:if="${creation_error}" th:text="${creation_error}"></small>
+                </form>
+                <p class="display-2 mb-2" th:if="${created_link}" th:text="${created_link}"></p>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

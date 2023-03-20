@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:insert="components/head">
+</head>
+<body>
+<header th:insert="components/header">
+</header>
+<main>
+    <div class="container">
+        <ul class="list-group" th:if="${links}">
+            <li class="list-group-item mt-2" th:each="link : ${links}">
+                <h4 class="mb-1 text-break w-100" th:text="${link.link}">Item Title</h4>
+                <p class="mb-1 text-break w-100" th:text="${link.source}">Item Subtitle</p>
+                <div class="d-flex w-100 justify-content-between">
+                    <button type="button" class="btn btn-primary">View Statistics</button>
+                    <form method="post" action="/delete-link">
+                        <input type="hidden" name="id" th:value="${link.id}">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <h1 th:unless="${links}">There are no links.</h1>
+    </div>
+</main>
+</body>
+</html>
