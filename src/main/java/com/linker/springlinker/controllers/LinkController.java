@@ -4,6 +4,7 @@ import com.linker.springlinker.models.Link;
 import com.linker.springlinker.models.User;
 import com.linker.springlinker.repos.LinkRepository;
 import com.linker.springlinker.services.LinkService;
+import com.linker.springlinker.services.StatisticService;
 import com.linker.springlinker.services.details.AppUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import com.linker.springlinker.utils.RandomStringGenerator;
 import java.util.List;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Locale;
 
 @Controller
 public class LinkController {
@@ -34,6 +36,9 @@ public class LinkController {
     @Autowired
     private LinkRepository linkRepository;
 
+    @Autowired
+    private StatisticService statisticService;
+
     @GetMapping("/my-links")
     public String myLinks(Model model) {
         AppUserDetails appUserDetails = (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -41,10 +46,10 @@ public class LinkController {
 
         List<Link> links = linkRepository.findByOwner(user);
 
-
         if(links != null) {
             model.addAttribute("links", links);
         }
+
         return "my-links";
     }
 
@@ -66,16 +71,21 @@ public class LinkController {
 
         if (auto != null) {
             String randomString = RandomStringGenerator.generateRandomString(10);
-            System.out.println(randomString);
 
             newLink.setLink(randomString);
         } else {
             newLink.setLink(formData.getFirst("link"));
         }
+
         newLink.setSource(formData.getFirst("source"));
 
-        linkService.addLink(newLink, user);
-        model.addAttribute("created_link", myHost + "/" + newLink.getLink());
+        String result = linkService.addLink(newLink, user);
+        if(result == "Created") {
+            model.addAttribute("created_link", myHost + "/l/" + newLink.getLink());
+        } else {
+            model.addAttribute("creation_error", result);
+        }
+
         return "create-link";
     }
 
@@ -84,12 +94,16 @@ public class LinkController {
         return "create-link";
     }
 
-    @GetMapping("/{url}")
-    public String goToLink(Model model, @PathVariable String url) {
+    @GetMapping("/l/{url}")
+    public String goToLink(Model model, @PathVariable String url, final Locale locale) {
         Link link = linkService.getLink(url);
+
+        System.out.println(locale.getCountry());
 
         if(link == null) {
             return "error";
+        } else {
+            statisticService.addStatistic(link, locale);
         }
 
         return "redirect:" + link.getSource();

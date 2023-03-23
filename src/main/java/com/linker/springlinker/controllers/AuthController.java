@@ -2,6 +2,7 @@ package com.linker.springlinker.controllers;
 
 import com.linker.springlinker.models.User;
 import com.linker.springlinker.services.AppUserDetailsService;
+import com.linker.springlinker.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
+    @Autowired
+    AuthService authService;
 
     @Autowired
     private AuthenticationProvider authenticationProvider;
@@ -26,11 +29,9 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login(@RequestParam(required = false) boolean error, Model model) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            return "redirect:";
-//        }
+        if(authService.checkAuthentication()){
+            return "redirect:";
+        }
         if (error) {
             model.addAttribute("log_error", "Wrong username or password");
         }
@@ -39,10 +40,9 @@ public class AuthController {
 
     @GetMapping("/registration")
     public String registration() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if (authentication != null && authentication.isAuthenticated()) {
-//            return "redirect:";
-//        }
+        if(authService.checkAuthentication()){
+            return "redirect:";
+        }
         return "registration";
     }
 

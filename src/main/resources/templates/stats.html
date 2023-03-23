@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:insert="components/head">
+</head>
+<body>
+<header th:insert="components/header">
+</header>
+<main>
+  <script type="text/javascript" th:inline="javascript">
+      const stats = [[${stats}]]
+
+      if(stats?.length !== 0) {
+        google.charts.load('current', {
+          callback: drawChart,
+          packages:['corechart']
+        });
+      }
+
+      const convertToTableDate = (data) => [
+        ["Date", "Views"],
+        ...Object.entries(data.reduce((prev, curr) => {
+          const date = curr.dateTime.split("T")[0]
+          if(prev[date]) {
+            prev[date] += 1
+          } else {
+            prev[date] = 1
+          }
+          return prev
+        }, {}))
+      ]
+
+      function drawChart() {
+        const options = {
+          title: 'Statistic',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          width: 900,
+          height: 400
+        };
+
+        const chart = new google.visualization.LineChart(document.getElementById('chart'));
+        chart.draw(google.visualization.arrayToDataTable(convertToTableDate(stats)), options);
+      }
+
+  </script>
+
+    <div class="container">
+    <div class="w-100 d-flex flex-column align-items-center">
+      <h1 th:text="${link}"></h1>
+      <h2>Total redirect count: <strong th:text="${count}"></strong></h2>
+      <div id="chart"></div>
+    </div>
+    <ul class="list-group" th:if="${stats}">
+      <li class="list-group-item mt-2 d-flex justify-content-between" th:each="stat : ${stats}">
+        <h4 th:text="${stat.country}"></h4>
+        <h4 th:text="${#temporals.format(stat.dateTime, 'yyyy-MM-dd HH:mm')}"></h4>
+      </li>
+    </ul>
+    <h1 th:unless="${stats}">There are no stats.</h1>
+  </div>
+</main>
+</body>
+</html>

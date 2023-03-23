@@ -12,7 +12,11 @@
                 <h4 class="mb-1 text-break w-100" th:text="${link.link}">Item Title</h4>
                 <p class="mb-1 text-break w-100" th:text="${link.source}">Item Subtitle</p>
                 <div class="d-flex w-100 justify-content-between">
-                    <button type="button" class="btn btn-primary">View Statistics</button>
+                    <button type="button" class="btn btn-primary">
+                        <a th:href="@{'/stats/' + ${link.link}}" class="btn btn-primary text-white p-0">
+                            View Statistics
+                        </a>
+                    </button>
                     <form method="post" action="/delete-link">
                         <input type="hidden" name="id" th:value="${link.id}">
                         <button type="submit" class="btn btn-danger">Delete</button>

@@ -28,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/", "/my-links", "/create-link").authenticated()
+                .antMatchers("/", "/my-links", "/create-link", "/stats/*").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

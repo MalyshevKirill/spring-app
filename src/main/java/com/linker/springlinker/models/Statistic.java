@@ -3,20 +3,22 @@ package com.linker.springlinker.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "links")
-public class Link {
+@Table(name = "stats")
+public class Statistic {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String source;
+    private LocalDateTime dateTime;
 
-    private String link;
+    private String country;
 
     @ManyToOne()
-    @JoinColumn(name = "owner_id")
-    private User owner;
+    @JoinColumn(name = "link_id")
+    private Link link;
 }

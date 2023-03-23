@@ -26,7 +26,6 @@ public class LinkService {
             return "Link has already been used";
         }
         link.setOwner(user);
-        System.out.println(link.toString());
         linkRepository.save(link);
         return "Created";
     }
